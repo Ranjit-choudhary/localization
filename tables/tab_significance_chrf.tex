@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{chrF++ of Qwen2.5-Coder-7B and difference of each system from it ($\Delta$ = system $-$ LLM), paired bootstrap resampling (1,000 samples), Holm-corrected: $^{*}p<0.05$, $^{**}p<0.01$. Positive $\Delta$: system closer to the Google baseline.\label{tab:significance}}
+\begin{tabular}{l rrrrrr}
+\toprule
+Language & LLM & Amazon Translate & Microsoft Translator & NLLB-200 & IndicTrans2 & Qwen2.5-Coder-7B (clean) \\
+\midrule
+German & 61.96 & +10.37 & +9.56 & -0.98 & -- & -0.09 \\
+French & 66.62 & +12.29 & +5.11 & -1.36 & -- & -0.11 \\
+Chinese & 51.96 & +7.78 & +2.16 & -20.04 & -- & -0.12 \\
+Spanish & 64.07 & +15.65 & +11.41 & +4.57 & -- & -0.11 \\
+Japanese & 51.51 & +6.28 & +4.91 & -7.46 & -- & -0.14 \\
+Hindi & 35.42 & +26.04 & +34.94 & +24.71 & +20.29 & -0.00 \\
+Arabic & 48.89 & +18.18 & +14.15 & +6.94 & -- & -0.09 \\
+Bengali & 34.84 & +28.97 & +33.41 & +25.27 & +25.09 & +0.05 \\
+Marathi & 25.32 & +26.96 & +41.32 & +31.19 & +23.75 & +0.01 \\
+Punjabi & 15.74 & +50.26 & +50.36 & +42.21 & +42.43 & -0.01 \\
+Tamil & 19.50 & +46.00 & +51.17 & +40.80 & +41.57 & +0.02 \\
+Telugu & 18.58 & +50.60 & +49.08 & +38.19 & +39.52 & +0.09 \\
+\bottomrule
+\end{tabular}
+\end{table*}

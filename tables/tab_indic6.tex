@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{Mean over the six Indic pairs, the subset supported by every system. Reference-based metrics measure agreement with the Google Translate baseline (TER: lower is closer). Neural metrics shown $\times$100.\label{tab:indic6}}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+System & BLEU & METEOR & chrF++ & ROUGE-L & TER & COMET & BERTScore & CometKiwi \\
+\midrule
+Amazon Translate & 44.69 & 45.01 & 63.04 & 9.30 & 46.30 & 87.33 & 91.49 & 79.38 \\
+Microsoft Translator & \textbf{46.96} & \textbf{51.16} & \textbf{68.28} & 10.53 & \textbf{41.28} & \textbf{89.39} & \textbf{92.61} & \textbf{79.92} \\
+NLLB-200 & 38.72 & 43.38 & 58.63 & \textbf{10.55} & 50.06 & 87.34 & 90.64 & 79.65 \\
+IndicTrans2 & 33.87 & 39.46 & 57.01 & 8.18 & 58.44 & 86.07 & 89.71 & 79.79 \\
+Qwen2.5-Coder-7B & 15.61 & 13.78 & 24.90 & 9.14 & 92.43 & -- & -- & -- \\
+Qwen2.5-Coder-7B (clean) & 15.95 & 13.79 & 24.93 & 9.14 & 91.63 & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

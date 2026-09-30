@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{TER by language. Dashes: pair not supported.\label{tab:ter_lang}}
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+System & German & French & Chinese & Spanish & Japanese & Hindi & Arabic & Bengali & Marathi & Punjabi & Tamil & Telugu \\
+\midrule
+Amazon Translate & 51.19 & 29.96 & 59.55 & 25.57 & 78.85 & 48.75 & 43.74 & 44.88 & 55.75 & 43.97 & 45.17 & 39.29 \\
+Microsoft Translator & 40.83 & 36.35 & 59.98 & 28.44 & 65.56 & 36.11 & 47.45 & 40.05 & 41.39 & 44.72 & 39.48 & 45.91 \\
+NLLB-200 & \textbf{66.75} & \textbf{59.23} & \textbf{82.42} & \textbf{48.87} & \textbf{91.20} & 46.27 & 57.21 & 48.79 & 49.83 & 52.66 & 50.27 & 52.56 \\
+IndicTrans2 & -- & -- & -- & -- & -- & 58.85 & -- & 56.06 & 69.19 & 56.08 & 56.02 & 54.41 \\
+Qwen2.5-Coder-7B & 54.46 & 40.66 & 62.51 & 34.71 & 75.94 & \textbf{75.45} & \textbf{61.73} & \textbf{77.58} & \textbf{96.06} & \textbf{113.53} & \textbf{92.60} & \textbf{99.38} \\
+Qwen2.5-Coder-7B (clean) & 54.47 & 40.66 & 62.47 & 34.74 & 75.95 & 75.06 & 61.66 & 76.75 & 95.34 & 113.44 & 91.93 & 97.24 \\
+\bottomrule
+\end{tabular}
+\end{table*}

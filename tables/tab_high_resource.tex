@@ -1,0 +1,15 @@
+\begin{table*}[t]
+\centering
+\caption{High-resource results, mean over EN-DE, EN-FR, EN-ZH, EN-ES, EN-JA. Reference-based metrics measure agreement with the Google Translate baseline (TER: lower is closer). Neural metrics shown $\times$100.\label{tab:high_resource}}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+System & BLEU & METEOR & chrF++ & ROUGE-L & TER & COMET & BERTScore & CometKiwi \\
+\midrule
+Amazon Translate & \textbf{57.90} & \textbf{45.14} & \textbf{69.70} & \textbf{52.30} & 49.02 & \textbf{90.88} & \textbf{92.39} & \textbf{79.61} \\
+Microsoft Translator & 54.15 & 42.29 & 65.86 & 51.79 & \textbf{46.23} & 89.81 & 91.53 & 78.44 \\
+NLLB-200 & 41.37 & 34.41 & 54.17 & 44.71 & 69.69 & 86.30 & 88.27 & 77.36 \\
+Qwen2.5-Coder-7B & 50.57 & 40.02 & 59.23 & 48.22 & 53.65 & -- & -- & -- \\
+Qwen2.5-Coder-7B (clean) & 50.49 & 40.03 & 59.11 & 48.22 & 53.66 & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

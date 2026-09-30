@@ -1,0 +1,47 @@
+lang,line,reason,source,output,empty_again,latency_sec,model,date
+ar,4791,not_sent,#ERROR!,خطأ!,False,57.987,qwen2.5-coder:7b,2026-09-30
+ar,6924,empty_output,Time Tracker Component,�件 مراقب الوقت,False,0.848,qwen2.5-coder:7b,2026-09-30
+ar,7204,not_sent,#ERROR!,خطأ!,False,0.557,qwen2.5-coder:7b,2026-09-30
+ar,8148,not_sent,#ERROR!,خطأ!,False,0.272,qwen2.5-coder:7b,2026-09-30
+ar,8892,empty_output,Usenet Component,�件 Usenet,False,0.782,qwen2.5-coder:7b,2026-09-30
+bn,4791,not_sent,#ERROR!,#অপশন সমস্যা!,False,2.038,qwen2.5-coder:7b,2026-09-30
+bn,7204,not_sent,#ERROR!,#অপশন সমস্যা!,False,1.599,qwen2.5-coder:7b,2026-09-30
+bn,8148,not_sent,#ERROR!,#অপশন সমস্যা!,False,1.48,qwen2.5-coder:7b,2026-09-30
+de,4791,not_sent,#ERROR!,#FEHLER!,False,1.179,qwen2.5-coder:7b,2026-09-30
+de,7204,not_sent,#ERROR!,#FEHLER!,False,0.667,qwen2.5-coder:7b,2026-09-30
+de,8148,not_sent,#ERROR!,#FEHLER!,False,0.66,qwen2.5-coder:7b,2026-09-30
+es,4791,not_sent,#ERROR!,#ERROR!,False,1.012,qwen2.5-coder:7b,2026-09-30
+es,7204,not_sent,#ERROR!,#ERROR!,False,0.438,qwen2.5-coder:7b,2026-09-30
+es,8148,not_sent,#ERROR!,#ERROR!,False,0.442,qwen2.5-coder:7b,2026-09-30
+fr,4791,not_sent,#ERROR!,#ERREUR!,False,1.218,qwen2.5-coder:7b,2026-09-30
+fr,7204,not_sent,#ERROR!,#ERREUR!,False,0.681,qwen2.5-coder:7b,2026-09-30
+fr,8148,not_sent,#ERROR!,#ERREUR!,False,0.671,qwen2.5-coder:7b,2026-09-30
+hi,4791,not_sent,#ERROR!,#आप्प गलत!,False,1.938,qwen2.5-coder:7b,2026-09-30
+hi,7204,not_sent,#ERROR!,#आपत्रों का अपडेट अगली विज्ञान दिन में होगा!,False,4.829,qwen2.5-coder:7b,2026-09-30
+hi,8148,not_sent,#ERROR!,#आपत्रों का अपडेट अगली विज्ञान दिन में होगा!,False,3.448,qwen2.5-coder:7b,2026-09-30
+ja,4791,not_sent,#ERROR!,エラー！,False,1.018,qwen2.5-coder:7b,2026-09-30
+ja,7204,not_sent,#ERROR!,エラー！,False,0.4,qwen2.5-coder:7b,2026-09-30
+ja,8148,not_sent,#ERROR!,エラー！,False,0.41,qwen2.5-coder:7b,2026-09-30
+mr,4791,not_sent,#ERROR!,#त्रुटी!,False,1.544,qwen2.5-coder:7b,2026-09-30
+mr,7204,not_sent,#ERROR!,#त्रुटी!,False,0.961,qwen2.5-coder:7b,2026-09-30
+mr,8148,not_sent,#ERROR!,#त्रुटी!,False,0.915,qwen2.5-coder:7b,2026-09-30
+pa,4791,not_sent,#ERROR!,#ਇਕਾਂਦਿਆਂ!,False,2.613,qwen2.5-coder:7b,2026-09-30
+pa,7204,not_sent,#ERROR!,#ਗੁਲਾਂਦਰ!,False,1.717,qwen2.5-coder:7b,2026-09-30
+pa,8148,not_sent,#ERROR!,#ਗੁਲਾਂਦਰ!,False,1.808,qwen2.5-coder:7b,2026-09-30
+ta,2880,empty_output,Single color,�ரியல்,False,1.491,qwen2.5-coder:7b,2026-09-30
+ta,3791,empty_output,Ignore unsafe symlinks,�லும்பு முக்கியமான மூலமைகளை அ gör்கள்,False,5.297,qwen2.5-coder:7b,2026-09-30
+ta,4581,empty_output,one,�ன்,False,0.854,qwen2.5-coder:7b,2026-09-30
+ta,4791,not_sent,#ERROR!,#ERROR!,False,0.838,qwen2.5-coder:7b,2026-09-30
+ta,5233,empty_output,A hexagon,�ங்கள்,False,1.352,qwen2.5-coder:7b,2026-09-30
+ta,5942,empty_output,Negative Float,�� விகிதம்,False,1.803,qwen2.5-coder:7b,2026-09-30
+ta,7204,not_sent,#ERROR!,#ERROR!,False,0.785,qwen2.5-coder:7b,2026-09-30
+ta,7712,empty_output,One Staple,�ற்றுமை,False,1.355,qwen2.5-coder:7b,2026-09-30
+ta,8148,not_sent,#ERROR!,#ERROR!,False,0.84,qwen2.5-coder:7b,2026-09-30
+ta,8464,empty_output,One,�ன்,False,0.794,qwen2.5-coder:7b,2026-09-30
+te,4791,not_sent,#ERROR!,#ప్రశ్నం!,False,2.186,qwen2.5-coder:7b,2026-09-30
+te,7204,not_sent,#ERROR!,#ప్రశ్నం!,False,1.421,qwen2.5-coder:7b,2026-09-30
+te,8148,not_sent,#ERROR!,#ప్రశ్నం!,False,1.338,qwen2.5-coder:7b,2026-09-30
+te,9964,empty_output,Operation Result,��作 ఫలితం,False,1.436,qwen2.5-coder:7b,2026-09-30
+zh,4791,not_sent,#ERROR!,#错误！,False,0.959,qwen2.5-coder:7b,2026-09-30
+zh,7204,not_sent,#ERROR!,#错误！,False,0.428,qwen2.5-coder:7b,2026-09-30
+zh,8148,not_sent,#ERROR!,#错误！,False,0.426,qwen2.5-coder:7b,2026-09-30

@@ -1,0 +1,8 @@
+system,accelerator (n=801),colon (n=1427),ellipsis (n=189),identifier (n=367),placeholder (n=357)
+baseline_google_translate,34.98,99.89,99.65,30.88,83.05
+amazon_translate,55.34,98.54,97.57,16.14,50.14
+microsoft_translator,45.29,99.69,99.34,49.07,56.56
+nllb200,69.62,65.43,78.31,30.18,59.55
+indictrans2,55.60,5.62,99.38,2.41,0.79
+qwen25_coder_7b,86.92,97.87,96.08,26.36,98.11
+qwen25_coder_7b_clean,86.87,98.57,96.69,26.32,98.11

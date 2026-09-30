@@ -1,0 +1,47 @@
+lang,line,source,reason
+hi,4791,#ERROR!,not_sent
+hi,7204,#ERROR!,not_sent
+hi,8148,#ERROR!,not_sent
+es,4791,#ERROR!,not_sent
+es,7204,#ERROR!,not_sent
+es,8148,#ERROR!,not_sent
+fr,4791,#ERROR!,not_sent
+fr,7204,#ERROR!,not_sent
+fr,8148,#ERROR!,not_sent
+ja,4791,#ERROR!,not_sent
+ja,7204,#ERROR!,not_sent
+ja,8148,#ERROR!,not_sent
+ar,4791,#ERROR!,not_sent
+ar,6924,Time Tracker Component,empty_output
+ar,7204,#ERROR!,not_sent
+ar,8148,#ERROR!,not_sent
+ar,8892,Usenet Component,empty_output
+bn,4791,#ERROR!,not_sent
+bn,7204,#ERROR!,not_sent
+bn,8148,#ERROR!,not_sent
+de,4791,#ERROR!,not_sent
+de,7204,#ERROR!,not_sent
+de,8148,#ERROR!,not_sent
+mr,4791,#ERROR!,not_sent
+mr,7204,#ERROR!,not_sent
+mr,8148,#ERROR!,not_sent
+pa,4791,#ERROR!,not_sent
+pa,7204,#ERROR!,not_sent
+pa,8148,#ERROR!,not_sent
+ta,2880,Single color,empty_output
+ta,3791,Ignore unsafe symlinks,empty_output
+ta,4581,one,empty_output
+ta,4791,#ERROR!,not_sent
+ta,5233,A hexagon,empty_output
+ta,5942,Negative Float,empty_output
+ta,7204,#ERROR!,not_sent
+ta,7712,One Staple,empty_output
+ta,8148,#ERROR!,not_sent
+ta,8464,One,empty_output
+te,4791,#ERROR!,not_sent
+te,7204,#ERROR!,not_sent
+te,8148,#ERROR!,not_sent
+te,9964,Operation Result,empty_output
+zh,4791,#ERROR!,not_sent
+zh,7204,#ERROR!,not_sent
+zh,8148,#ERROR!,not_sent

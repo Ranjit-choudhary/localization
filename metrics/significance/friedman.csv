@@ -1,0 +1,11 @@
+subset,metric,n_langs,k_systems,chi2,p_value
+all12,bleu,12,4,27.1,5.6099e-06
+all12,meteor,12,4,22.3,5.6496e-05
+all12,chrf,12,4,27.1,5.6099e-06
+all12,rouge_l,12,4,3.3,0.34764
+all12,ter,12,4,22.5,5.133e-05
+indic6,bleu,6,5,22,0.00020042
+indic6,meteor,6,5,21.333,0.00027194
+indic6,chrf,6,5,20.933,0.00032645
+indic6,rouge_l,6,5,10.667,0.030577
+indic6,ter,6,5,21.333,0.00027194

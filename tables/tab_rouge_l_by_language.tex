@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{ROUGE-L by language. Dashes: pair not supported.\label{tab:rouge_l_lang}}
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+System & German & French & Chinese & Spanish & Japanese & Hindi & Arabic & Bengali & Marathi & Punjabi & Tamil & Telugu \\
+\midrule
+Amazon Translate & 66.56 & \textbf{80.96} & \textbf{16.63} & \textbf{81.52} & 15.82 & \textbf{10.53} & 12.24 & 4.12 & 5.26 & 9.48 & 12.37 & 14.04 \\
+Microsoft Translator & \textbf{69.75} & 77.74 & 16.08 & 78.13 & \textbf{17.25} & 9.94 & \textbf{13.74} & 5.55 & 5.88 & \textbf{13.23} & 14.18 & \textbf{14.40} \\
+NLLB-200 & 57.47 & 69.11 & 10.60 & 70.12 & 16.23 & 10.18 & 12.91 & 6.02 & 5.92 & 12.68 & \textbf{14.36} & 14.14 \\
+IndicTrans2 & -- & -- & -- & -- & -- & 8.15 & -- & 3.55 & 4.56 & 10.79 & 10.37 & 11.67 \\
+Qwen2.5-Coder-7B & 59.77 & 73.96 & 16.19 & 74.90 & 16.29 & 9.43 & 13.06 & 6.34 & \textbf{5.97} & 10.01 & 12.23 & 10.88 \\
+Qwen2.5-Coder-7B (clean) & 59.77 & 73.95 & 16.19 & 74.89 & 16.29 & 9.43 & 13.04 & \textbf{6.35} & 5.97 & 10.01 & 12.22 & 10.86 \\
+\bottomrule
+\end{tabular}
+\end{table*}

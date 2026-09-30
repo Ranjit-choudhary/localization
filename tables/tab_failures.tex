@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering
+\caption{Failure modes (\% of strings, mean over supported languages).\label{tab:failures}}
+\begin{tabular}{lrrrrrrr}
+\toprule
+System & empty & untranslated & wrong script & script intrusion & overgeneration & meta commentary & corrupt char \\
+\midrule
+Google Translate & 0.00 & 0.00 & 0.00 & 0.03 & 0.00 & 0.00 & 0.00 \\
+Amazon Translate & 0.00 & 0.39 & 0.44 & 0.02 & 0.02 & 0.00 & 0.00 \\
+Microsoft Translator & 0.00 & 1.74 & 1.49 & 0.02 & 0.02 & 0.01 & 0.00 \\
+NLLB-200 & 0.01 & 0.40 & 0.92 & 0.00 & 0.15 & 0.00 & 0.00 \\
+IndicTrans2 & 0.00 & 0.04 & 0.21 & 0.00 & 0.05 & 0.00 & 0.00 \\
+Qwen2.5-Coder-7B & 0.00 & 0.98 & 2.04 & 1.66 & 0.97 & 0.12 & 0.01 \\
+Qwen2.5-Coder-7B (clean) & 0.00 & 0.98 & 1.92 & 1.66 & 0.85 & 0.01 & 0.01 \\
+\bottomrule
+\end{tabular}
+\end{table*}
