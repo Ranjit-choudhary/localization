@@ -3,24 +3,16 @@ import time
 import pandas as pd
 import ollama
 
-# 1. Configuration: Your specific models and batch
-# MODELS = ["llama3.2", "qwen2.5-coder:7b", "translategemma:4b"]
-MODELS = ["qwen2.5-coder:7b"]
+# 1. Configuration: Add up to 3-4 LLMs to this list for your benchmark comparison
+MODELS = ["llama3.2"]  
 
+# The 12 target languages required for your global benchmark
 TARGET_LANGUAGES = {
-    "hi": "Hindi",
     "es": "Spanish",
     "fr": "French",
     "ja": "Japanese",
-    "ar": "Arabic",
-    "bn": "Bengali",
-    "de": "German",
-    "mr:": "Marathi",
-    "pa": "Punjabi",
-    "ta": "Tamil",
-    "te": "Telugu",
-    "zh": "Chinese",
-}
+    "mr": "Marathi",
+}  
 
 INPUT_FILE = "Dataset-Translated.xlsx"
 
@@ -50,8 +42,7 @@ def query_ollama(model_name: str, messages: list) -> tuple[str, float]:
             messages=messages,
             options={
                 "temperature": 0.0,
-                "top_p": 0.9,
-                "num_predict": 100
+                "top_p": 0.9
             }
         )
         latency = round(time.time() - start, 3)
@@ -67,40 +58,28 @@ def main():
         raise FileNotFoundError(f"Cannot find input file: {INPUT_FILE}")
 
     df_raw = pd.read_excel(INPUT_FILE)
+    
+    # MODIFIED: Removed the .iloc[:5] limit. This now grabs every row in the first column.
     source_strings = df_raw.iloc[:, 0].dropna().astype(str).tolist()
 
     print(f"Loaded {len(source_strings)} source strings from the dataset.")
 
+    # Loop through each language
     for lang_code, lang_name in TARGET_LANGUAGES.items():
         print(f"\n--- Processing Language: {lang_name} ---")
+        
         output_file = f"translations_{lang_name.lower()}.csv"
         
-        # 1. CHECKPOINT LOGIC
-        completed_translations = set()
-        if os.path.exists(output_file):
-            try:
-                df_existing = pd.read_csv(output_file)
-                for index, row in df_existing.iterrows():
-                    completed_translations.add(f"{row['string_id']}_{row['model']}")
-            except Exception as e:
-                print(f"Could not read existing file {output_file}: {e}")
-        else:
+        if not os.path.exists(output_file):
             pd.DataFrame(columns=[
                 "string_id", "source_en", "lang_code", "target_language", "model", "translation", "latency_sec"
             ]).to_csv(output_file, index=False)
 
-        
-        for model in MODELS:
-            print(f"\n>> Loading {model} into memory...")
+        for str_id, src_text in enumerate(source_strings):
+            messages = get_translation_messages(src_text, lang_name)
             
-            for str_id, src_text in enumerate(source_strings):
-                if f"{str_id}_{model}" in completed_translations:
-                    # Silently skip to avoid spamming the terminal
-                    continue
-                
-                messages = get_translation_messages(src_text, lang_name)
-                
-                print(f"Translating [{str_id + 1}/{len(source_strings)}] {model} -> {lang_code} ({lang_name})...")
+            for model in MODELS:
+                print(f"[{str_id + 1}/{len(source_strings)}] {model} -> {lang_code} ({lang_name})...")
                 translation, latency = query_ollama(model, messages)
 
                 row = pd.DataFrame([{
@@ -113,10 +92,10 @@ def main():
                     "latency_sec": latency
                 }])
 
+                # Append result incrementally 
                 row.to_csv(output_file, mode="a", header=False, index=False)
-                
-                # Sleep reduced to 0.1s since your temps are a very safe 61°C
-                # time.sleep(0.5)
-    print("\nBenchmark complete. Check your CSV files for the results.")
+
+    print("\nBenchmark complete. All 12 language files have been generated.")
+
 if __name__ == "__main__":
     main()
