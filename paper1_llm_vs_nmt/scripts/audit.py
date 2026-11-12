@@ -52,7 +52,10 @@ LANGUAGES = [
 CHATTER_REGEX = re.compile(r'(?i)^(here is the translation|translation:|note:|as an ai|translate into|arabic:|spanish:|bengali:)')
 PLACEHOLDER_REGEX = re.compile(r'%\d+|%[a-zA-Z]|\{[^}]+\}')
 XML_ENTITY_REGEX = re.compile(r'&\s*[a-zA-Z0-9._-]+;')
-ACCELERATOR_REGEX = re.compile(r'&[^\s\d_;]')
+# KDE4/OPUS tokenisation writes accelerators with a space ("& Outline"), so an
+# optional single space is allowed after '&'. (The LLM repo's original pattern
+# r'&[^\s\d_;]' matched only 1 of the 785 accelerator strings in the corpus.)
+ACCELERATOR_REGEX = re.compile(r'&\s?[^\s\d_;&]')
 REPLACEMENT_CHAR_REGEX = re.compile(r'\ufffd')
 
 # Non-Translatable Token (NTT) Allowlist and Pattern Matchers
@@ -135,7 +138,7 @@ def discover_systems():
 
     return systems
 
-def run_audit(sample_size_flagged=100, sample_size_unflagged=50, random_seed=42):
+def run_audit(sample_size_flagged=100, sample_size_unflagged=50, random_seed=42, new_sample=False):
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     
     if not SOURCE_FILE.exists():
@@ -302,7 +305,12 @@ def run_audit(sample_size_flagged=100, sample_size_unflagged=50, random_seed=42)
     sys_agg.to_csv(sys_agg_csv, index=False, encoding="utf-8")
     print(f"Saved system-level summary to {sys_agg_csv}")
 
-    # Generate Task 5 validation sample: manual_check_sample.csv
+    # Validation sample: manual_check_sample.csv. It holds human/model grades, so it is
+    # only (re)drawn when missing or when --new-sample is passed.
+    sample_csv = RESULTS_DIR / "manual_check_sample.csv"
+    if sample_csv.exists() and not new_sample:
+        print(f"Kept existing graded sample {sample_csv} (use --new-sample to redraw)")
+        flagged_pool = []
     random.seed(random_seed)
     sampled_flagged = random.sample(flagged_pool, min(sample_size_flagged, len(flagged_pool)))
     sampled_unflagged = random.sample(unflagged_pool, min(sample_size_unflagged, len(unflagged_pool)))
@@ -310,10 +318,10 @@ def run_audit(sample_size_flagged=100, sample_size_unflagged=50, random_seed=42)
     sample_combined = sampled_flagged + sampled_unflagged
     random.shuffle(sample_combined)
 
-    df_sample = pd.DataFrame(sample_combined)
-    sample_csv = RESULTS_DIR / "manual_check_sample.csv"
-    df_sample.to_csv(sample_csv, index=False, encoding="utf-8")
-    print(f"Saved manual validation sample to {sample_csv} ({len(df_sample)} rows: {len(sampled_flagged)} flagged + {len(sampled_unflagged)} unflagged, seed={random_seed})")
+    if flagged_pool:
+        df_sample = pd.DataFrame(sample_combined)
+        df_sample.to_csv(sample_csv, index=False, encoding="utf-8")
+        print(f"Saved manual validation sample to {sample_csv} ({len(df_sample)} rows: {len(sampled_flagged)} flagged + {len(sampled_unflagged)} unflagged, seed={random_seed})")
 
     # Print summary table to console
     print("\n" + "=" * 95)
@@ -328,10 +336,12 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=42, help="Random seed for manual check sample")
     parser.add_argument("--flagged-sample", type=int, default=100, help="Number of flagged samples")
     parser.add_argument("--unflagged-sample", type=int, default=50, help="Number of unflagged samples")
+    parser.add_argument("--new-sample", action="store_true", help="Redraw manual_check_sample.csv (overwrites grades)")
     args = parser.parse_args()
 
     run_audit(
         sample_size_flagged=args.flagged_sample,
         sample_size_unflagged=args.unflagged_sample,
-        random_seed=args.seed
+        random_seed=args.seed,
+        new_sample=args.new_sample
     )

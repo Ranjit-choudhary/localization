@@ -44,6 +44,7 @@ C_NMT = "#1baf7a"    # slot 3 aqua    -> NMT
 SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 TYPE_COLORS = {"Copy fallback": "#2a78d6", "Broken placeholder": "#eb6834",
                "Script contamination": "#1baf7a", "Encoding corruption": "#eda100",
+               "Broken accelerator": "#e87ba4",
                "Other": "#898781"}
 
 plt.rcParams.update({
@@ -126,7 +127,12 @@ def fig2(bs, missing):
         ax.scatter(r.defect_rate_pct, r.cometkiwi_mean, s=46, color=C_REP, edgecolor=SURFACE, lw=1.5, zorder=3)
         ax.text(b.defect_rate_pct * 1.12, b.cometkiwi_mean - 0.0035, label, fontsize=7.5, color=INK2)
     ax.set_xscale("log")
-    ax.set_xticks([0.1, 0.3, 1, 3, 10, 20], ["0.1", "0.3", "1", "3", "10", "20"])
+    from matplotlib.ticker import NullFormatter, NullLocator
+    lo, hi = llm.defect_rate_pct.min(), llm.defect_rate_pct.max()
+    ticks = [t for t in (0.1, 0.2, 0.5, 1, 2, 3, 5, 10, 20, 30, 50) if lo * 0.8 <= t <= hi * 1.25]
+    ax.set_xlim(lo * 0.8, hi * 1.25)
+    ax.xaxis.set_minor_locator(NullLocator()); ax.xaxis.set_minor_formatter(NullFormatter())
+    ax.set_xticks(ticks, [f"{t:g}" for t in ticks])
     ax.set_xlabel("Defect rate (% of strings, log scale)  -  lower is safer")
     ax.set_ylabel("Mean CometKiwi (wmt22-cometkiwi-da)  -  higher is better")
     ax.set_title("Quality vs. string safety", loc="left", color=INK)
@@ -173,9 +179,10 @@ def fig4(bs, missing):
     groups = pd.DataFrame({
         "Copy fallback": llm.copy_fallback,
         "Broken placeholder": llm.broken_placeholder,
+        "Broken accelerator": llm.broken_accelerator,
         "Script contamination": llm.script_contamination,
         "Encoding corruption": llm.encoding_corruption,
-        "Other": llm.broken_accelerator + llm.conversational_chatter + llm.empty_output,
+        "Other": llm.conversational_chatter + llm.empty_output,
     })
     share = groups.div(groups.sum(axis=1), axis=0) * 100
     fig, ax = plt.subplots(figsize=(7.0, 4.0))
@@ -192,8 +199,8 @@ def fig4(bs, missing):
     ax.axhline(4.5, color=AXIS, lw=0.8)
     ax.set_xlim(0, 100)
     ax.set_xlabel("Share of defect occurrences (%)  -  a string can carry more than one type")
-    ax.set_title("Defect taxonomy by system", loc="left", color=INK, pad=22)
-    ax.legend(frameon=False, ncol=5, loc="lower left", bbox_to_anchor=(0, 1.0), fontsize=7.5)
+    ax.set_title("Defect taxonomy by system", loc="left", color=INK, pad=34)
+    ax.legend(frameon=False, ncol=3, loc="lower left", bbox_to_anchor=(0, 1.0), fontsize=7.5)
     note(fig, missing)
     save(fig, "fig4_defect_taxonomy.png")
 
