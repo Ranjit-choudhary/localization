@@ -15,7 +15,7 @@ A) Invariant defects (string level; needs audit output for both systems)
      translations of a string as independent; the cluster CI does not).
    Comparisons: baseline vs repaired per model, all pairs of repaired LLMs, all pairs of
    baseline LLMs. LLM vs NMT is run automatically for any NMT system whose translation
-   files exist (none yet: Track 1 files are 0-byte stubs).
+   files exist (all five, from nmt-benchmarking-paper-main/data).
 
 B) CometKiwi (language level; only per-language means exist, no per-segment scores)
    Unit = one language. Paired over the languages both systems cover (12, or 6 for

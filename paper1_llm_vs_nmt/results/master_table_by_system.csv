@@ -1,16 +1,16 @@
 system,label,family,tier,n_languages,n_strings_audited,script_contamination,broken_placeholder,broken_accelerator,encoding_corruption,conversational_chatter,copy_fallback,empty_output,total_flawed,defect_rate_pct,defect_rate_high_pct,defect_rate_low_pct,cometkiwi_mean,cometkiwi_high,cometkiwi_low,defect_data_available
-baseline_gpt4o,GPT-4o-mini,LLM,baseline,12,122736.0,81.0,5.0,1939.0,0.0,1.0,1083.0,0.0,3104.0,2.53,2.3,2.69,0.7877,0.7875,0.7879,True
-baseline_llama_8b,Llama-3.1-8B,LLM,baseline,12,122736.0,0.0,1692.0,6791.0,10.0,1.0,1299.0,0.0,9749.0,7.94,6.82,8.75,0.7483,0.764,0.7371,True
-baseline_mistral_nemo,Mistral-Nemo-12B,LLM,baseline,12,122736.0,0.0,10148.0,6518.0,10.0,2.0,718.0,0.0,17302.0,14.1,15.95,12.77,0.6872,0.7098,0.671,True
-baseline_gemma_9b,Gemma-2-9B,LLM,baseline,12,122736.0,1226.0,43.0,5076.0,0.0,1.0,20611.0,0.0,26899.0,21.92,5.8,33.43,0.7395,0.7774,0.7124,True
-baseline_qwen_7b,Qwen-2.5-7B,LLM,baseline,12,122736.0,328.0,691.0,1106.0,1343.0,1.0,3933.0,1.0,7340.0,5.98,2.51,8.46,0.7046,0.7688,0.6588,True
-repaired_gpt4o,GPT-4o-mini + repair,LLM,repaired,12,122736.0,31.0,4.0,1940.0,0.0,1.0,232.0,0.0,2206.0,1.8,1.45,2.04,0.7877,0.7872,0.788,True
-repaired_llama_8b,Llama-3.1-8B + repair,LLM,repaired,12,122736.0,0.0,52.0,6812.0,1.0,0.0,89.0,0.0,6945.0,5.66,4.75,6.3,0.7531,0.7674,0.7429,True
-repaired_mistral_nemo,Mistral-Nemo-12B + repair,LLM,repaired,12,122736.0,0.0,141.0,6524.0,1.0,0.0,161.0,7.0,6823.0,5.56,6.28,5.04,0.7136,0.7415,0.6937,True
-repaired_gemma_9b,Gemma-2-9B + repair,LLM,repaired,12,122736.0,109.0,1.0,5181.0,0.0,1.0,885.0,5.0,6178.0,5.03,4.41,5.48,0.7653,0.7801,0.7548,True
-repaired_qwen_7b,Qwen-2.5-7B + repair,LLM,repaired,12,122736.0,136.0,52.0,1124.0,541.0,0.0,1167.0,1.0,2996.0,2.44,1.0,3.47,0.7069,0.7701,0.6617,True
-google_translate,Google Translate,NMT,commercial,12,,,,,,,,,,,,,0.7939,0.7902,0.7966,False
-microsoft_translator,Microsoft Translator,NMT,commercial,12,,,,,,,,,,,,,0.7894,0.7844,0.7931,False
-nllb200,NLLB-200 (600M),NMT,open,12,,,,,,,,,,,,,0.7834,0.7736,0.7903,False
-madlad400,MADLAD-400 (3B),NMT,open,12,,,,,,,,,,,,,0.7703,0.7726,0.7686,False
-indictrans2,IndicTrans2 (1B),NMT,open,6,,,,,,,,,,,,,0.7979,,0.7979,False
+baseline_gpt4o,GPT-4o-mini,LLM,baseline,12,122736,81,5,1939,0,1,1083,0,3104,2.53,2.3,2.69,0.7877,0.7875,0.7879,True
+baseline_llama_8b,Llama-3.1-8B,LLM,baseline,12,122736,0,1692,6791,10,1,1299,0,9749,7.94,6.82,8.75,0.7483,0.764,0.7371,True
+baseline_mistral_nemo,Mistral-Nemo-12B,LLM,baseline,12,122736,0,10148,6518,10,2,718,0,17302,14.1,15.95,12.77,0.6872,0.7098,0.671,True
+baseline_gemma_9b,Gemma-2-9B,LLM,baseline,12,122736,1226,43,5076,0,1,20611,0,26899,21.92,5.8,33.43,0.7395,0.7774,0.7124,True
+baseline_qwen_7b,Qwen-2.5-7B,LLM,baseline,12,122736,328,691,1106,1343,1,3933,1,7340,5.98,2.51,8.46,0.7046,0.7688,0.6588,True
+repaired_gpt4o,GPT-4o-mini + repair,LLM,repaired,12,122736,31,4,1940,0,1,232,0,2206,1.8,1.45,2.04,0.7877,0.7872,0.788,True
+repaired_llama_8b,Llama-3.1-8B + repair,LLM,repaired,12,122736,0,52,6812,1,0,89,0,6945,5.66,4.75,6.3,0.7531,0.7674,0.7429,True
+repaired_mistral_nemo,Mistral-Nemo-12B + repair,LLM,repaired,12,122736,0,141,6524,1,0,161,7,6823,5.56,6.28,5.04,0.7136,0.7415,0.6937,True
+repaired_gemma_9b,Gemma-2-9B + repair,LLM,repaired,12,122736,109,1,5181,0,1,885,5,6178,5.03,4.41,5.48,0.7653,0.7801,0.7548,True
+repaired_qwen_7b,Qwen-2.5-7B + repair,LLM,repaired,12,122736,136,52,1124,541,0,1167,1,2996,2.44,1.0,3.47,0.7069,0.7701,0.6617,True
+google_translate,Google Translate,NMT,commercial,12,122736,0,727,6146,1,0,836,0,7706,6.28,6.49,6.13,0.7939,0.7902,0.7966,True
+microsoft_translator,Microsoft Translator,NMT,commercial,12,122736,364,1861,5378,1,1,2218,1,9458,7.71,5.3,9.43,0.7894,0.7844,0.7931,True
+nllb200,NLLB-200 (600M),NMT,open,12,122736,0,1728,2850,0,0,554,17,5125,4.18,5.52,3.22,0.7834,0.7736,0.7903,True
+madlad400,MADLAD-400 (3B),NMT,open,12,122736,4,2546,6525,0,1,1999,74,11119,9.06,8.21,9.67,0.7703,0.7726,0.7686,True
+indictrans2,IndicTrans2 (1B),NMT,open,6,61368,1,2125,2524,0,0,38,0,4661,7.6,,7.6,0.7979,,0.7979,True

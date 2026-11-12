@@ -7,20 +7,16 @@
 **Core Research Question:** In cloud-native localization pipelines, do LLMs preserve runtime invariants (placeholders, accelerators, script purity, encoding) better or worse than classic NMT, and how does their CometKiwi quality compare?
 **GitHub:** https://github.com/Ranjit-choudhary/localization/tree/main/paper1_llm_vs_nmt
 
-### Task checklist
-**Blocker:** Track 1 NMT translation files. `cloud-native-nmt-benchmark-main/data/*/*.txt` are all 0-byte stubs. Ranjit is requesting them from sir/Track 1. **Do NOT use `../dump/`** (project rule, 2026-11-12).
+### Task checklist (all research work complete, 2026-11-12)
+NMT data: `nmt-benchmarking-paper-main/data/` (Track 1, added 2026-11-12; 55 files pass `CHECKSUMS.txt`). The old `cloud-native-nmt-benchmark-main` folder (0-byte stubs) was replaced by it. **Never use `../dump/`.**
 
-- [x] **Invariant audit** (`scripts/audit.py`): LLMs from the LLM repo, NMT **only** from `cloud-native-nmt-benchmark-main/data/` (0-byte files skipped). 10 LLM suites × 12 langs, 1,227,360 strings.
-  - [x] Accelerator check fixed 2026-11-12 (see Decision 8).
-  - [ ] ⏳ NMT systems (automatic once files exist).
-- [x] **Audit validation:** `results/manual_check_sample.csv` graded (`model_verdict`, `model_note`). Precision 91%, miss rate 2%.
-  - [ ] ✍️ Optional: Ranjit spot-checks about 20 rows in `my_verdict`.
-- [x] **Master table and figures:** `results/master_table*.csv`, 4 figures at 300 DPI in `figures/`.
-- [x] **Statistics** (`scripts/stats.py`): `results/stats_defects_pairwise.csv` (25 tests, 24 robust) and `results/stats_cometkiwi_pairwise.csv` (55 tests, 28 robust).
-- [x] **Manuscript:** `paper/outline.md`, `paper/draft.md` v0.2 with 41 references (Track 1's 30 plus 11 checked additions).
-  - [ ] ⏳ `[PENDING-NMT]` sections.
-  - [ ] ✍️ `[AUTHORS]`.
-- [ ] Optional follow-up: re-run the LLM repair loop with the corrected accelerator check (needs GPU and the LLM repo's `run_agentic_repair.py`).
+- [x] **Invariant audit** (`scripts/audit.py`): 10 LLM suites + 5 NMT systems, 1,779,672 strings. Accelerator check fixed (Decision 8).
+- [x] **Audit validation:** LLM sample (`manual_check_sample.csv`, 91%) + NMT sample (`manual_check_sample_nmt.csv`, 94%) = 92% precision overall.
+- [x] **Master table and figures:** all 15 suites in `results/master_table*.csv` and the 4 figures.
+- [x] **Statistics:** 75 defect tests (72 robust), 55 CometKiwi tests (28 robust).
+- [x] **Manuscript:** `paper/draft.md` v0.3, complete, no PENDING markers, 41 references.
+- [ ] ✍️ Team: `[AUTHORS]`.
+- [ ] Optional: human spot-check of `my_verdict` in both samples; re-run LLM repair with the corrected accelerator check (GPU).
 
 ---
 
@@ -32,6 +28,7 @@
 | `python paper1_llm_vs_nmt/scripts/build_master_table.py` | Merge defects + CometKiwi (both repos) | `results/master_table.csv`, `master_table_by_system.csv` |
 | `python paper1_llm_vs_nmt/scripts/stats.py` | Paired significance tests (~80 s) | `results/stats_defects_pairwise.csv`, `stats_cometkiwi_pairwise.csv` |
 | `python paper1_llm_vs_nmt/scripts/generate_figures.py` | 4 figures, 300 DPI | `figures/fig1..fig4*.png` |
+| `python paper1_llm_vs_nmt/scripts/sample_nmt_check.py` | NMT validation sample (kept if exists; `--new-sample` redraws) | `results/manual_check_sample_nmt.csv` |
 
 All scripts overwrite their own outputs, never modify source data, and print a summary.
 
@@ -46,6 +43,7 @@ All scripts overwrite their own outputs, never modify source data, and print a s
 - Removed dump usage; built master table, figures, statistics, outline and draft v0.1; pushed to GitHub `main`.
 - Graded the 150-row manual sample. The one miss revealed the accelerator bug; fixed it, re-ran everything, and rewrote the draft as v0.2 with real references.
 - Found that the repo's "gpt4o" is actually **gpt-4o-mini** (`findings/experiment_runs.json`).
+- Track 1 NMT files arrived (`nmt-benchmarking-paper-main`). Verified checksums and line counts, audited all 5 NMT systems, validated the audit on NMT (94%), redrew figures with NMT, ran LLM-vs-NMT stats, and completed draft v0.3.
 
 ---
 
@@ -65,19 +63,24 @@ All scripts overwrite their own outputs, never modify source data, and print a s
 
 ## 5. Key Numbers (sources: `results/*.csv`)
 
-| System | Defect rate (baseline → repaired) | CometKiwi (baseline → repaired) | Accelerators lost (of 9,420) |
+| System | Defect rate | CometKiwi | Accelerators lost |
 |---|---:|---:|---:|
-| GPT-4o-mini | 2.53% → 1.80% | 0.7877 → 0.7877 | 20.6% |
-| Qwen-2.5-7B | 5.98% → 2.44% | 0.7046 → 0.7069 | 11.7% |
-| Llama-3.1-8B | 7.94% → 5.66% | 0.7483 → 0.7531 | 72.1% |
-| Mistral-Nemo-12B | 14.10% → 5.56% | 0.6872 → 0.7136 | 69.2% |
-| Gemma-2-9B | 21.92% → 5.03% | 0.7395 → 0.7653 | 53.9% |
-| Google / Microsoft / NLLB / MADLAD / IndicTrans2 | ⏳ | 0.7939 / 0.7894 / 0.7834 / 0.7703 / 0.7979 (6 langs) | ⏳ |
+| GPT-4o-mini → + repair | 2.53% → 1.80% | 0.7877 | 20.6% |
+| Qwen-2.5-7B → + repair | 5.98% → 2.44% | 0.7046 → 0.7069 | 11.7% |
+| Llama-3.1-8B → + repair | 7.94% → 5.66% | 0.7483 → 0.7531 | 72.1% |
+| Mistral-Nemo-12B → + repair | 14.10% → 5.56% | 0.6872 → 0.7136 | 69.2% |
+| Gemma-2-9B → + repair | 21.92% → 5.03% | 0.7395 → 0.7653 | 53.9% |
+| NLLB-200 | 4.18% | 0.7834 | 30.3% |
+| Google Translate | 6.28% | 0.7939 | 65.2% |
+| IndicTrans2 (6 langs) | 7.60% | 0.7979 | 53.6% |
+| Microsoft Translator | 7.71% | 0.7894 | 57.1% |
+| MADLAD-400 | 9.06% | 0.7703 | 69.3% |
 
-- Repair: −29% to −77% defects. It never turns a clean string into a flawed one, but it does not fix accelerators (its validator never saw them). Invented placeholders fell from 11,932 to 130.
-- GPT-4o-mini is tied with Google, Microsoft, NLLB and IndicTrans2 on CometKiwi and beats MADLAD-400 (+0.0175, 12/12 langs).
-- All open 7–12B LLMs are significantly below Google and Microsoft (−0.024 to −0.107).
-- Audit precision is 91% (copy fallback 87.5%; all other types 100%); miss rate 2% (the accelerator bug, now fixed).
+- **RQ1:** no paradigm dominates. GPT-4o-mini is safer than every NMT system; Mistral and Gemma are worse than every NMT system; Qwen and Llama sit inside the NMT range.
+- NMT never invents placeholders but breaks existing ones (`%1` → `1%`, `% 1`); IndicTrans2 breaks 99.5% of them. Open LLMs invent them (11,932).
+- **RQ3:** every repaired LLM is safer than Google, Microsoft, MADLAD and IndicTrans2; only repaired GPT-4o-mini and Qwen beat NLLB-200.
+- **RQ2:** GPT-4o-mini is tied with Google, Microsoft, NLLB and IndicTrans2 on CometKiwi; open LLMs are below Google and Microsoft.
+- GPT-4o-mini + repair is the best trade-off (1.80% defects, NMT-level quality).
 
 ---
 
@@ -94,6 +97,7 @@ All scripts overwrite their own outputs, never modify source data, and print a s
 
 ## 7. Next Steps
 
-1. ⏳ **When Track 1 NMT files arrive:** copy them into `cloud-native-nmt-benchmark-main/data/<system>/<lang>.txt` (10,228 lines each, UTF-8), run the 4 scripts in order (Section 2), then fill `[PENDING-NMT]` in `paper/draft.md` (abstract, Table 2, §4.1, §4.2, §4.5, §5, §7).
-2. ✍️ Fill `[AUTHORS]`.
-3. Optional: spot-check `my_verdict`; re-run repair with the corrected accelerator check.
+1. ✍️ Fill `[AUTHORS]` in `paper/draft.md`.
+2. Optional: human spot-check of `my_verdict` in both validation samples.
+3. Optional: re-run LLM repair with the corrected accelerator check (GPU), then re-run the 4 scripts.
+4. Convert `paper/draft.md` to the target journal's LaTeX template.

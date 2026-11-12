@@ -28,7 +28,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 # Workspace root configuration
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent
 REPO1_DATA = WORKSPACE_ROOT / "cloud-native-llm-benchmark-main" / "cloud-native-llm-benchmark-main" / "data"
-REPO2_DATA = WORKSPACE_ROOT / "cloud-native-nmt-benchmark-main" / "data"
+REPO2_DATA = WORKSPACE_ROOT / "nmt-benchmarking-paper-main" / "data"
 RESULTS_DIR = WORKSPACE_ROOT / "paper1_llm_vs_nmt" / "results"
 SOURCE_FILE = REPO1_DATA / "source" / "en.txt"
 
@@ -121,7 +121,7 @@ def discover_systems():
             if d.is_dir() and (d.name.startswith("baseline_") or d.name.startswith("repaired_")):
                 systems[d.name] = d
 
-    # NMT systems: read ONLY from the Track 1 repo (cloud-native-nmt-benchmark-main/data).
+    # NMT systems: read ONLY from the Track 1 repo (nmt-benchmarking-paper-main/data).
     # The ../dump folder is never used (project decision 2026-11-12).
     # 0-byte stub files are skipped automatically in run_audit().
     nmt_candidates = [

@@ -8,14 +8,14 @@ Merges, per (system, language):
 Inputs (read-only):
   paper1_llm_vs_nmt/results/defect_summary.csv
   cloud-native-llm-benchmark-main/.../metrics/cometkiwi/cometkiwi_scores.csv
-  cloud-native-nmt-benchmark-main/metrics/cometkiwi/cometkiwi_scores.csv
+  nmt-benchmarking-paper-main/metrics/cometkiwi/cometkiwi_scores.csv
 
 Outputs (overwritten):
   results/master_table.csv            one row per system x language
   results/master_table_by_system.csv  one row per system
 
 NMT defect columns stay empty until Track 1 provides the NMT translation files
-(cloud-native-nmt-benchmark-main/data/*.txt are 0-byte stubs). The ../dump folder
+(empty files are skipped). The ../dump folder
 is never used.
 
 Run:  python paper1_llm_vs_nmt/scripts/build_master_table.py
@@ -29,7 +29,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS = ROOT / "paper1_llm_vs_nmt" / "results"
 LLM_CK = ROOT / "cloud-native-llm-benchmark-main" / "cloud-native-llm-benchmark-main" / "metrics" / "cometkiwi" / "cometkiwi_scores.csv"
-NMT_CK = ROOT / "cloud-native-nmt-benchmark-main" / "metrics" / "cometkiwi" / "cometkiwi_scores.csv"
+NMT_CK = ROOT / "nmt-benchmarking-paper-main" / "metrics" / "cometkiwi" / "cometkiwi_scores.csv"
 
 HIGH_RESOURCE = {"de", "fr", "zh", "es", "ja"}  # as defined in the Track 1 paper
 LANGS = ["ar", "bn", "de", "es", "fr", "hi", "ja", "mr", "pa", "ta", "te", "zh"]

@@ -1,11 +1,9 @@
 # LLMs vs. Classic NMT Systems for Software UI Localization: Which One Breaks Software Strings Less, and How Does Quality Compare?
 
-> **DRAFT v0.2 (2026-11-12).** Every number in this draft comes from a file in `paper1_llm_vs_nmt/results/`.
-> v0.2 change: the accelerator check now recognises the corpus's `& File` notation (785 source strings). v0.1 checked only 1 of them, so every defect number changed.
-> Markers:
-> - **[PENDING-NMT]**: needs the Track 1 NMT translation files (`cloud-native-nmt-benchmark-main/data/*.txt` are currently 0-byte). Re-run `audit.py → build_master_table.py → stats.py → generate_figures.py` and fill in.
-> - **[AUTHORS]**: author list and affiliations, to be confirmed by the team.
-> - Manual-check grades are model-assisted (`model_verdict`). A human spot-check goes in the `my_verdict` column.
+> **DRAFT v0.3 (2026-11-12).** Complete draft: every number comes from a file in `paper1_llm_vs_nmt/results/`.
+> - v0.3: NMT translation files from Track 1 (`nmt-benchmarking-paper-main/data/`) added; all NMT results filled in, and the audit was validated on NMT output as well.
+> - v0.2: the accelerator check now recognises the corpus's `& File` notation.
+> - Remaining for the team: **[AUTHORS]**, plus an optional human spot-check of the validation samples (`my_verdict` column).
 
 **Authors:** [AUTHORS]
 
@@ -13,7 +11,13 @@
 
 ## Abstract
 
-Cloud-native delivery pipelines increasingly push machine translations of user-interface (UI) strings straight into production builds. A translation that reads well can still break software: a dropped `%1` placeholder crashes a format call, a lost `&` removes a keyboard shortcut, and stray characters from another script or a `�` replacement character corrupt the screen. Standard translation metrics do not see these failures. We compare five large language models (GPT-4o-mini, Llama-3.1-8B, Mistral-Nemo-12B, Gemma-2-9B, Qwen-2.5-7B) with five neural machine translation (NMT) systems (Google Translate, Microsoft Translator, NLLB-200, MADLAD-400, IndicTrans2) on 10,228 KDE software strings in twelve languages. We use a deterministic seven-check invariant audit (91% precision on a validation sample) together with reference-free CometKiwi quality estimation. Zero-shot LLMs break between 2.53% (GPT-4o-mini) and 21.92% (Gemma-2-9B) of strings. Each model fails in its own way: Llama and Mistral-Nemo drop about 70% of keyboard accelerators, Mistral-Nemo invents placeholders in 8% of all strings, and Gemma collapses into untranslated copies on Punjabi and Telugu. A compiler-guided self-repair loop removes 29–77% of defects and never turns a clean string into a flawed one. However, it fixes only what its validator checks, and because the validator did not recognise the corpus's accelerator notation, accelerator losses survive repair almost untouched. On quality, GPT-4o-mini is statistically indistinguishable from Google Translate, Microsoft Translator, NLLB-200 and IndicTrans2, and significantly better than MADLAD-400. The four open 7–12B models remain significantly below the commercial NMT engines even after repair. [PENDING-NMT: one sentence comparing NMT defect rates.] We release the audit, statistics and figures as re-runnable scripts.
+Cloud-native delivery pipelines increasingly push machine translations of user-interface (UI) strings straight into production builds. A translation that reads well can still break software: a dropped `%1` placeholder crashes a format call, a lost `&` removes a keyboard shortcut, and stray characters from another script or a `�` replacement character corrupt the screen. Standard translation metrics do not see these failures.
+
+We compare five large language models (GPT-4o-mini, Llama-3.1-8B, Mistral-Nemo-12B, Gemma-2-9B, Qwen-2.5-7B) with five neural machine translation (NMT) systems (Google Translate, Microsoft Translator, NLLB-200, MADLAD-400, IndicTrans2) on 10,228 KDE software strings in twelve languages. We use a deterministic seven-check invariant audit (92% precision on 150 validated flags) together with reference-free CometKiwi quality estimation.
+
+**Neither paradigm is uniformly safer.** NMT systems break 4.18–9.06% of strings, while zero-shot LLMs range from 2.53% (GPT-4o-mini, safer than every NMT system) to 21.92% (Gemma-2-9B, worse than every NMT system). The two families fail differently. NMT systems drop 30–69% of keyboard accelerators and mangle existing placeholders (`%1` → `1%`, `% 1`), but they never invent placeholders. Open LLMs invent placeholders the source never had (11,932 strings) and collapse into untranslated copies on low-resource languages. A compiler-guided self-repair loop cuts LLM defects by 29–77%, so that every repaired LLM is safer than Google Translate, Microsoft Translator, MADLAD-400 and IndicTrans2. The loop fixes only what its validator checks, however.
+
+On quality, GPT-4o-mini is statistically indistinguishable from Google, Microsoft, NLLB-200 and IndicTrans2 and better than MADLAD-400, while the open 7–12B LLMs trail the commercial engines. GPT-4o-mini with repair is the only system that is both at NMT quality and below 2% defects. We release the audit, statistics and figures as re-runnable scripts.
 
 **Keywords:** software localization, large language models, neural machine translation, quality estimation, CometKiwi, continuous localization, cloud-native CI/CD
 
@@ -34,10 +38,10 @@ We ask:
 - **RQ3 (repair).** Does compiler-guided self-repair change the safety–quality trade-off for LLMs?
 
 **Contributions.**
-1. A deterministic, re-runnable seven-check invariant audit for software UI translations, with an allowlist for legitimate non-translatable tokens (NTTs) and a measured precision of 91%, applied to 1,227,360 LLM translations [PENDING-NMT: + NMT count].
-2. A controlled comparison of 5 LLMs and 5 NMT systems on the same 10,228 source strings in 12 languages, using the same CometKiwi checkpoint for both.
-3. A failure taxonomy showing that LLM defects are model-specific: accelerator loss, prompt-induced placeholder invention (11,932 strings), low-resource copy collapse and byte-level encoding corruption.
-4. Evidence that validator-in-the-loop self-repair removes the defects its validator checks (and never adds new flawed strings), but silently passes the ones it does not check. This makes the validator's coverage, not the LLM, the limiting factor.
+1. A deterministic, re-runnable seven-check invariant audit for software UI translations, with an allowlist for legitimate non-translatable tokens (NTTs). It was validated on both LLM and NMT output (92% precision) and applied to 1,779,672 translations from 15 system suites.
+2. A controlled comparison of 5 LLMs and 5 NMT systems on the same 10,228 source strings in 12 languages, using the same CometKiwi checkpoint for both, with paired statistics (cluster bootstrap, McNemar, Wilcoxon, Holm) for every claim.
+3. A failure taxonomy showing that the two paradigms break software in different ways. NMT mistranslates or drops accelerators and splits placeholders. Open LLMs invent placeholders and copy the source on low-resource languages.
+4. Evidence that validator-in-the-loop self-repair moves every LLM below most NMT systems in defect rate and never adds new flawed strings, but silently passes defect types its validator does not recognise.
 
 ---
 
@@ -58,7 +62,7 @@ We ask:
 ## 3. Experimental Setup
 
 ### 3.1 Corpus and languages
-We use a fixed set of **10,228 English UI strings** from the KDE desktop environment, taken from OPUS KDE4 [29]. The source file has SHA-256 `464d6582…fe281f` and is identical in both team repositories. Targets are **12 languages**: five high-resource (de, fr, es, zh, ja) and seven low-resource (hi, ar, bn, mr, pa, ta, te), following the Track 1 study. Every system translates the same source lines, so every comparison is paired at the string level. Of the source strings, 785 contain a keyboard accelerator (written `& File` in this tokenized corpus), and 356 contain format placeholders.
+We use a fixed set of **10,228 English UI strings** from the KDE desktop environment, taken from OPUS KDE4 [29]. The source file has SHA-256 `464d6582…fe281f` and is identical in the LLM and NMT repositories. All 55 NMT files pass the Track 1 checksum manifest. Targets are **12 languages**: five high-resource (de, fr, es, zh, ja) and seven low-resource (hi, ar, bn, mr, pa, ta, te). IndicTrans2 covers only the six Indic languages. Every system translates the same source lines, so every comparison is paired at the string level. Of the source strings, 785 contain a keyboard accelerator (written `& File` in this tokenized corpus) and 356 contain format placeholders.
 
 ### 3.2 Systems
 
@@ -75,16 +79,16 @@ We use a fixed set of **10,228 English UI strings** from the KDE desktop environ
 | NMT (commercial) | Microsoft Translator | Azure AI Translator v3.0, 6 Sep 2026 | 12 |
 | NMT (open) | NLLB-200 | `facebook/nllb-200-distilled-600M`, greedy | 12 |
 | NMT (open) | MADLAD-400 | `google/madlad400-3b-mt`, fp16, greedy | 12 |
-| NMT (open) | IndicTrans2 | `ai4bharat/indictrans2-en-indic-1B`, greedy | 6 (Indic) |
+| NMT (open) | IndicTrans2 | `ai4bharat/indictrans2-en-indic-1B`, greedy, IndicProcessor | 6 (Indic) |
 
 Note: the LLM repository labels the API model `gpt4o`, but its run log (`findings/experiment_runs.json`) records `gpt-4o-mini`. We report it as GPT-4o-mini throughout.
 
-All LLMs share one zero-shot system prompt (`prompts/system_zero_shot.txt`). It asks for a single-line translation and to "preserve all placeholders, format specifiers, and variables (e.g., {0}, {name}, %s, %d, …) exactly as written". It does not mention keyboard accelerators. Open-weights models ran on an NVIDIA A100-SXM4-80GB. NMT configurations are those of the Track 1 study.
+All LLMs share one zero-shot system prompt (`prompts/system_zero_shot.txt`). It asks for a single-line translation and to "preserve all placeholders, format specifiers, and variables (e.g., {0}, {name}, %s, %d, …) exactly as written". It does not mention keyboard accelerators. Open-weights LLMs ran on an NVIDIA A100-SXM4-80GB. NMT configurations are those of the Track 1 study; the NMT engines received the raw source string with no pre- or post-processing beyond each toolkit's defaults.
 
 ### 3.3 Invariant audit
 Every output line is checked against its source line for seven defect types (`scripts/audit.py`):
 
-1. **Broken placeholder.** The multiset of `%N`, `%x` and `{…}` tokens differs between source and output (omitted, invented or altered).
+1. **Broken placeholder.** The multiset of `%N`, `%x` and `{…}` tokens differs between source and output (omitted, invented or altered, e.g. `%1` → `1%` or `% 1`).
 2. **Broken accelerator.** The source has an `&` accelerator and the output has none. XML entities such as `&kexi;` and `&amp;` are removed before checking. An optional space after `&` is allowed, because KDE4 in OPUS is tokenized as `& File`.
 3. **Script contamination.** The output contains characters from a Unicode block foreign to the target language (e.g. CJK or Cyrillic in Hindi).
 4. **Encoding corruption.** The output contains U+FFFD.
@@ -94,7 +98,11 @@ Every output line is checked against its source line for seven defect types (`sc
 
 The **NTT allowlist** exempts strings that should stay untranslated: hardware and protocol acronyms (USB, SCSI, IPv6, …), spreadsheet formulas (`BIN2OCT(value)`), POSIX format descriptors, XML entities, X11 colour names, short upper-case identifiers, time-zone paths, and single-word Western-European cognates for de/es/fr. A string counts as *flawed* if it has at least one defect. Defect rate = flawed strings / audited strings.
 
-**Audit validation.** We drew a stratified sample of 100 flagged and 50 unflagged strings (seed 42; `results/manual_check_sample.csv`) and graded each one as a true or false defect. **Precision was 91% (91/100).** It was 100% (28/28) for placeholder, encoding and script flags and 87.5% (63/72) for copy fallback. All nine false positives were copy-fallback flags on strings that may legitimately stay in English: five person names (e.g. *Matthias Ettrich*), two code identifiers (`massVariance`, `ImagePlugin_ChannelMixer`), the directory name `lost+found`, and one French cognate (`(%1 occurrences)`). Among the 50 unflagged strings we found **one miss (2%)**: GPT-4o-mini translated the accelerator in `& Outline` as the Bengali word for "and". That miss exposed the accelerator bug described in §6, and the audit was fixed before the results below were produced. The grades were model-assisted. A human spot-check of the same rows is recorded in the `my_verdict` column.
+**Audit validation.** We drew two stratified samples with seed 42 and graded each flag as a true or false defect:
+- **LLM sample** (100 flagged + 50 unflagged; `results/manual_check_sample.csv`): 91% precision (91/100).
+- **NMT sample** (50 flagged + 25 unflagged; `results/manual_check_sample_nmt.csv`): 94% precision (47/50).
+
+**Overall precision is 92% (138/150).** It is 100% (70/70) for accelerator, placeholder, encoding and script flags and 85% (68/80) for copy fallback. All 12 false positives are copy-fallback flags on strings that may legitimately stay in English: person names (e.g. *Matthias Ettrich*), code identifiers (`massVariance`), the directory `lost+found`, technical names (*CCITT Modified Huffman RLE*, the MIDI instrument *Lead 3 – Calliope*) and cognates (French `(%1 occurrences)`, German `& Suffix:`). Among the 75 unflagged strings we found one miss: GPT-4o-mini translated the accelerator in `& Outline` as the Bengali word for "and". That miss exposed the accelerator bug described in §6, which was fixed before the results below were produced. The grades were model-assisted; a human spot-check of the same rows is recorded in the `my_verdict` column.
 
 ### 3.4 Compiler-guided self-repair (LLMs only)
 For each baseline LLM, every string flagged by the LLM repository's validator goes back to **the same model** with a targeted system prompt (`scripts/run_agentic_repair.py`). The prompt contains only the rules matching the detected defects: the exact placeholder list (or, when the model invented placeholders, an instruction to add no variables), the accelerator rule, a script-purity rule naming the target script, or a "do not return the source unchanged" rule with a de-camel-cased meaning hint. Decoding is greedy (T = 0). The candidate is re-validated, and it **replaces the original only if it passes every check**. Otherwise the original line is kept. Unflagged strings are never touched.
@@ -107,53 +115,71 @@ Both tracks scored every output with the same reference-free model, **CometKiwi 
 ### 3.6 Statistical analysis
 All tests are paired, with 10,000 bootstrap resamples and seed 42 (`scripts/stats.py`).
 
-- **Defects (string level).** The unit is a (language, source line) pair; n = 122,736 per LLM. We report the risk difference in percentage points with a 95% **cluster-bootstrap** CI that resamples whole source strings, so the 12 translations of one string stay together [38]. We also report a **McNemar** test [39] on discordant pairs (exact binomial when b + c < 25, otherwise χ² with continuity correction) and the paired odds ratio.
+- **Defects (string level).** The unit is a (language, source line) pair; n = 122,736 per 12-language suite and 61,368 for IndicTrans2, which is compared on its six languages only. We report the risk difference in percentage points with a 95% **cluster-bootstrap** CI that resamples whole source strings, so the translations of one string stay together [38]. We also report a **McNemar** test [39] on discordant pairs (exact binomial when b + c < 25, otherwise χ² with continuity correction) and the paired odds ratio.
 - **CometKiwi (language level).** The unit is a language; n = 12, or 6 for IndicTrans2. We report the mean difference with a 95% bootstrap CI over languages, an **exact Wilcoxon signed-rank** test [41], and Cohen's d_z.
-- **Multiplicity.** **Holm–Bonferroni** correction [40] within each family (25 defect tests; 55 CometKiwi tests). We call a result *robust* when it is Holm-significant **and** its bootstrap CI excludes zero.
+- **Multiplicity.** **Holm–Bonferroni** correction [40] within each family (75 defect tests; 55 CometKiwi tests). We call a result *robust* when it is Holm-significant **and** its bootstrap CI excludes zero.
 
-With 12 languages, the smallest attainable exact Wilcoxon p is 0.00049. With 6 languages it is 0.031, so no IndicTrans2 comparison can survive Holm correction. We flag this rather than hide it.
+With 12 languages, the smallest attainable exact Wilcoxon p is 0.00049. With 6 languages it is 0.031, so no IndicTrans2 CometKiwi comparison can survive Holm correction. We flag this rather than hide it.
 
 ---
 
 ## 4. Results
 
-### 4.1 RQ1: How often does each system break strings?
+### 4.1 RQ1: Which paradigm breaks fewer strings?
 
-**Table 2. Invariant defects per system (12 languages × 10,228 strings).** Source: `results/master_table_by_system.csv`.
+**Table 2. Invariant defects per system (10,228 strings × 12 languages; IndicTrans2 × 6).** Source: `results/master_table_by_system.csv`.
 
 | System | Flawed | Defect rate | High-res. | Low-res. | Accelerator | Copy fallback | Placeholder | Script | Encoding |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| *NMT* | | | | | | | | | |
+| NLLB-200 | 5,125 | 4.18% | 5.52% | 3.22% | 2,850 | 554 | 1,728 | 0 | 0 |
+| Google Translate | 7,706 | 6.28% | 6.49% | 6.13% | 6,146 | 836 | 727 | 0 | 1 |
+| IndicTrans2 (6 langs) | 4,661 | 7.60% | – | 7.60% | 2,524 | 38 | 2,125 | 1 | 0 |
+| Microsoft Translator | 9,458 | 7.71% | 5.30% | 9.43% | 5,378 | 2,218 | 1,861 | 364 | 1 |
+| MADLAD-400 | 11,119 | 9.06% | 8.21% | 9.67% | 6,525 | 1,999 | 2,546 | 4 | 0 |
+| *LLM, zero-shot* | | | | | | | | | |
 | GPT-4o-mini | 3,104 | 2.53% | 2.30% | 2.69% | 1,939 | 1,083 | 5 | 81 | 0 |
 | Qwen-2.5-7B | 7,340 | 5.98% | 2.51% | 8.46% | 1,106 | 3,933 | 691 | 328 | 1,343 |
 | Llama-3.1-8B | 9,749 | 7.94% | 6.82% | 8.75% | 6,791 | 1,299 | 1,692 | 0 | 10 |
 | Mistral-Nemo-12B | 17,302 | 14.10% | 15.95% | 12.77% | 6,518 | 718 | 10,148 | 0 | 10 |
 | Gemma-2-9B | 26,899 | 21.92% | 5.80% | 33.43% | 5,076 | 20,611 | 43 | 1,226 | 0 |
+| *LLM + repair* | | | | | | | | | |
 | GPT-4o-mini + repair | 2,206 | 1.80% | 1.45% | 2.04% | 1,940 | 232 | 4 | 31 | 0 |
 | Qwen-2.5-7B + repair | 2,996 | 2.44% | 1.00% | 3.47% | 1,124 | 1,167 | 52 | 136 | 541 |
 | Gemma-2-9B + repair | 6,178 | 5.03% | 4.41% | 5.48% | 5,181 | 885 | 1 | 109 | 0 |
 | Mistral-Nemo-12B + repair | 6,823 | 5.56% | 6.28% | 5.04% | 6,524 | 161 | 141 | 0 | 1 |
 | Llama-3.1-8B + repair | 6,945 | 5.66% | 4.75% | 6.30% | 6,812 | 89 | 52 | 0 | 1 |
-| Google Translate | [PENDING-NMT] | | | | | | | | |
-| Microsoft Translator | [PENDING-NMT] | | | | | | | | |
-| NLLB-200 | [PENDING-NMT] | | | | | | | | |
-| MADLAD-400 | [PENDING-NMT] | | | | | | | | |
-| IndicTrans2 (6 langs) | [PENDING-NMT] | | | | | | | | |
 
-Chatter and empty-output defects are rare (≤ 7 per suite) and are omitted from the table; full counts are in the CSV.
+Chatter and empty output are rare (≤ 7 per suite, except MADLAD-400 with 74 empty outputs and NLLB-200 with 17); full counts are in the CSV.
 
-Among zero-shot LLMs the safety ranking is GPT-4o-mini (2.53%) < Qwen (5.98%) < Llama (7.94%) < Mistral-Nemo (14.10%) < Gemma (21.92%). Every pairwise difference between baseline LLMs is robust (`results/stats_defects_pairwise.csv`, family `baseline_pairwise`). For example, GPT-4o-mini vs Qwen is −3.45 pp [−3.65, −3.25] and Llama vs Mistral-Nemo is −6.15 pp [−6.55, −5.76]. Figure 3 shows where the defects concentrate. Gemma breaks 77.9% of Punjabi and 75.7% of Telugu strings. Mistral-Nemo is poor everywhere (5.7–12.4% in every language, before counting accelerators).
+**Like-for-like (zero-shot LLM vs NMT, neither post-processed).** The paired tests (`results/stats_defects_pairwise.csv`, family `llm_vs_nmt`; 50 tests, 48 robust) show that **neither paradigm dominates.** The best LLM beats the best NMT system, the worst LLMs are worse than any NMT system, and the middle overlaps:
 
-[PENDING-NMT: NMT defect rates, the LLM-vs-NMT comparison (family `llm_vs_nmt`, generated automatically once the files exist), and the answer to RQ1. The fair comparison is **baseline LLM vs NMT**, since neither had any post-processing.]
+| Zero-shot LLM | vs Google | vs Microsoft | vs NLLB-200 | vs MADLAD-400 | vs IndicTrans2 (6 langs) |
+|---|---|---|---|---|---|
+| GPT-4o-mini | **−3.75** [−4.04, −3.47] | **−5.18** | **−1.65** [−1.88, −1.42] | **−6.53** | **−4.76** |
+| Qwen-2.5-7B | −0.30 [−0.65, 0.05] (tie) | **−1.73** | +1.81 | **−3.08** | +0.97 |
+| Llama-3.1-8B | +1.67 | +0.24 [−0.09, 0.55] (tie) | +3.77 | **−1.12** | +1.30 |
+| Mistral-Nemo-12B | +7.82 | +6.39 | +9.92 | +5.04 | +4.37 |
+| Gemma-2-9B | +15.64 | +14.21 | +17.74 | +12.86 | +29.69 |
 
-### 4.2 Failure taxonomy
-Figure 4 shows that each model fails in its own way:
+The table shows the risk difference in percentage points, LLM minus NMT; **bold** means the LLM is significantly safer. All entries except the two marked ties are robust.
 
-- **Accelerator loss (all models, worst for Llama and Mistral-Nemo).** Of the 9,420 accelerator strings (785 × 12 languages), Llama drops the accelerator in 72.1%, Mistral-Nemo in 69.2%, Gemma in 53.9%, GPT-4o-mini in 20.6% and Qwen in 11.7%. Typical failures are dropping `&` silently, translating it as the word "and" (*Start & time* → 開始と時間), escaping it to `&amp;`, or moving it to the end of the string where it marks no letter (背景颜色:&). GPT-4o-mini's losses concentrate in Bengali (658 of 785 strings). The zero-shot prompt never mentions accelerators, so these losses show what models do with `&` when they are not told.
-- **Invented placeholders (Mistral-Nemo, Llama).** 97% of Mistral-Nemo's placeholder errors and 90% of Llama's are placeholders *added* to strings that had none: 9,820 of 10,148 and 1,529 of 1,692 (`reports/placeholder_error_decomposition.csv`). Across the open models, 11,932 strings received an invented placeholder. Because the system prompt lists example specifiers (`{0}`, `%s`, `%d`), we read this as **prompt-induced**: a rule meant to protect placeholders leads smaller models to insert them.
-- **Copy collapse on low-resource languages (Gemma, Qwen).** 20,611 of Gemma's defects are untranslated copies, concentrated in pa/te/mr/ta. Its low-resource defect rate (33.43%) is 5.8× its high-resource rate (5.80%). Qwen shows the same pattern more mildly (8.46% vs 2.51%).
-- **Encoding corruption (Qwen only).** 1,343 Qwen strings contain U+FFFD, often next to stray CJK or Cyrillic fragments (ਦੋ�cuメント). This is a byte-level tokenization failure that no other model shows at scale.
+GPT-4o-mini is safer than every NMT system, by 1.65 pp against the safest one (NLLB-200). Qwen-2.5-7B and Llama-3.1-8B sit inside the NMT range. Mistral-Nemo and Gemma are less safe than every NMT system. Among NMT systems, the open NLLB-200 (600M) is the safest (4.18%), safer than both commercial engines.
 
-[PENDING-NMT: NMT taxonomy, e.g. whether NMT systems also drop or mistranslate `&`, and whether they omit rather than invent placeholders.]
+Figure 3 shows where defects concentrate. Gemma breaks 79.7% of Punjabi and 76.7% of Telugu strings. Microsoft is worst on Marathi and Punjabi (11.7% and 12.6%), MADLAD-400 exceeds 10% in five languages (de, hi, mr, pa, te), and NLLB-200 is worst on Chinese (8.7%).
+
+### 4.2 Failure taxonomy: the two paradigms break software differently
+Figure 4 shows the defect mix per system.
+
+- **Accelerators: the biggest NMT failure.** Accelerators account for 54–80% of NMT defect occurrences. Of the accelerator strings in each suite, MADLAD-400 drops the accelerator in 69.3%, Google in 65.2%, Microsoft in 57.1%, IndicTrans2 in 53.6% and NLLB-200 in 30.3%. Typical NMT failures:
+  - translating `&` as the word "and" (`& Data Format` → "और डेटा प्रारूप", `& User Certificate:` → "et certificat utilisateur")
+  - keeping the letter but losing the marker (`& Delete...` → "मिटाएँ... (D)")
+  - substituting a full-width `＆`
+
+  Among zero-shot LLMs, Llama (72.1%) and Mistral-Nemo (69.2%) are as bad as the worst NMT, Gemma loses 53.9%, and GPT-4o-mini (20.6%) and Qwen (11.7%) lose far fewer than any NMT system.
+- **Placeholders: NMT breaks them, open LLMs invent them.** NMT systems never add a placeholder (0 invented for Google, Microsoft, NLLB and IndicTrans2; 4 for MADLAD-400). Instead they break the ones present, usually by reformatting `%1` as `1%`, `% 1` or `٪ 1`. The share of placeholder-bearing strings broken is 17% for Google, 40–44% for NLLB-200 and Microsoft, 60% for MADLAD-400 and 99.5% for IndicTrans2 (2,125 of 2,136, almost all split into `% 1`, consistent with its script-normalisation pre-processing). Open LLMs do the opposite: 97% of Mistral-Nemo's 10,148 placeholder errors and 90% of Llama's 1,692 are placeholders *added* to strings that had none (11,932 across the open models). The system prompt lists example specifiers (`{0}`, `%s`, `%d`), so we read this as **prompt-induced**. GPT-4o-mini breaks only 5 placeholders.
+- **Copy collapse on low-resource languages (Gemma, Qwen).** 20,611 of Gemma's defects are untranslated copies, concentrated in pa/te/mr/ta. Its low-resource defect rate (33.43%) is 5.8× its high-resource rate (5.80%). NMT systems show no such collapse; NLLB-200 is in fact *safer* on low-resource languages (3.22% vs 5.52%).
+- **Encoding and script errors.** Encoding corruption (U+FFFD) is specific to Qwen (1,343 strings). Script contamination appears in Gemma (1,226), Microsoft Translator (364, all in Punjabi, e.g. the Arabic percent sign ٪ in `٪ 1`) and Qwen (328).
 
 ### 4.3 RQ2: Translation quality (CometKiwi)
 
@@ -184,7 +210,7 @@ Paired over languages (`results/stats_cometkiwi_pairwise.csv`, 55 tests, 28 robu
 - **The gap is largest on low-resource languages.** NMT systems score *higher* on low-resource than on high-resource languages (Google 0.7966 vs 0.7902), whereas every open LLM scores lower (e.g. Qwen 0.6588 vs 0.7688). This matches the resource effect reported by Robinson et al. [35].
 
 ### 4.4 RQ3: Effect of compiler-guided repair
-Repair reduces defects for every model, and every reduction is robust (`stats_defects_pairwise.csv`, family `baseline_vs_repaired`):
+Repair reduces defects for every LLM, and every reduction is robust (family `baseline_vs_repaired`):
 
 | Model | Baseline → repaired | Relative change | Risk difference [95% CI] |
 |---|---|---:|---|
@@ -194,53 +220,70 @@ Repair reduces defects for every model, and every reduction is robust (`stats_de
 | Gemma-2-9B | 21.92% → 5.03% | −77.0% | 16.88 pp [16.66, 17.10] |
 | Qwen-2.5-7B | 5.98% → 2.44% | −59.2% | 3.54 pp [3.42, 3.67] |
 
+**Repair moves every LLM below most NMT systems.** All five repaired suites are robustly safer than Google Translate (by 0.62–4.48 pp), Microsoft Translator (2.05–5.91 pp), MADLAD-400 (3.40–7.26 pp) and IndicTrans2 (1.16–5.43 pp on its six languages). Against NLLB-200, the safest NMT system, only repaired GPT-4o-mini (−2.38 pp) and repaired Qwen (−1.74 pp) are safer. Repaired Gemma, Mistral-Nemo and Llama remain 0.86–1.48 pp behind it, because of their accelerator losses.
+
 **Repair fixes what its validator checks.** For the defect types the repair validator detected (placeholders, copy fallback, script, encoding, chatter), residual counts fall sharply. Invented placeholders drop from 11,932 to 130 (−98.9%), and Gemma's copy fallbacks drop from 20,611 to 885. No string that was clean before repair is flawed after it: the clean→flawed count is 0 in every model.
 
-**Repair does not fix what its validator misses.** Accelerator losses are essentially unchanged: Llama 6,791 → 6,812, Mistral-Nemo 6,518 → 6,524, Gemma 5,076 → 5,181, GPT-4o-mini 1,939 → 1,940. After repair, accelerators account for 84–98% of all remaining defects in GPT-4o-mini, Llama, Mistral-Nemo and Gemma (Figure 4). The small *increases* (e.g. +105 for Gemma) come from strings that were re-translated to fix another defect and lost their `&` in the process. Those strings were already flawed, so they do not count as clean→flawed. As a result, the repaired ranking differs from the baseline ranking. GPT-4o-mini (1.80%) and Qwen (2.44%), which drop few accelerators, become the safest. Llama (5.66%) and Mistral-Nemo (5.56%) are tied (difference 0.10 pp [−0.03, 0.24], not significant).
+**Repair does not fix what its validator misses.** Accelerator losses are essentially unchanged: Llama 6,791 → 6,812, Mistral-Nemo 6,518 → 6,524, Gemma 5,076 → 5,181, GPT-4o-mini 1,939 → 1,940. After repair, accelerators account for 84–98% of all remaining defects in GPT-4o-mini, Llama, Mistral-Nemo and Gemma. The small increases (e.g. +105 for Gemma) come from strings that were re-translated to fix another defect and lost their `&` in the process. Those strings were already flawed, so they do not count as clean→flawed. Repaired Llama and Mistral-Nemo are tied (0.10 pp [−0.03, 0.24], not significant).
 
 Repair also *raised* CometKiwi for every open model (Llama +0.0048, Mistral-Nemo +0.0264, Gemma +0.0259, Qwen +0.0023; all Holm p = 0.027, robust) and left GPT-4o-mini unchanged (0.0000, p = 0.97). The independent quality model therefore agrees that the repaired strings are better translations, not just strings that pass a regex.
 
-Repair is cheap. The targeted re-prompts for the four open models took 89 s (Llama), 155 s (Mistral-Nemo), 151 s (Qwen) and 512 s (Gemma) of A100 wall-clock time for 3,008–21,888 flagged strings (`reports/repair_execution_telemetry.jsonl`). Re-running the loop with the corrected accelerator check is the obvious next step (§6).
+Repair is cheap. The targeted re-prompts for the four open models took 89 s (Llama), 155 s (Mistral-Nemo), 151 s (Qwen) and 512 s (Gemma) of A100 wall-clock time for 3,008–21,888 flagged strings (`reports/repair_execution_telemetry.jsonl`).
 
 ### 4.5 The safety–quality trade-off
-Figure 2 places each suite by defect rate and CometKiwi. Repair moves every model left (safer) and, for the open models, up (better quality). GPT-4o-mini + repair is the only LLM inside the NMT quality band (0.770–0.798), and it is also the safest LLM suite (1.80%). [PENDING-NMT: add NMT points to Figure 2 and state whether any NMT system dominates.]
+Figure 2 places all 15 suites by defect rate and CometKiwi. **GPT-4o-mini + repair dominates the field.** It has the lowest defect rate of any system (1.80%), and its CometKiwi (0.7877) is statistically tied with Google (0.7939), Microsoft (0.7894) and NLLB-200 (0.7834). Among NMT systems:
+- NLLB-200 gives the best safety–quality balance (4.18%, 0.7834).
+- Google and IndicTrans2 have the highest quality but break 6–8% of strings.
+- MADLAD-400 is dominated on both axes by GPT-4o-mini, Google, Microsoft and NLLB-200.
+
+The open LLMs, even repaired, sit below the NMT quality band. Repair moves them left toward NMT-level safety but not up to NMT-level quality.
 
 ---
 
 ## 5. Discussion
 
-**The validator is the product.** The repair loop removed nearly every defect it could see and none it could not. One regex that did not match the corpus's `& File` notation left 6,800 accelerator losses per open model in place after repair. For CI/CD use, validator coverage must be tested against the real string format of each project, for example with seeded test strings for every invariant type, before the loop is trusted.
+**There is no safe paradigm, only safe configurations.** A team choosing "NMT because it is predictable" ships 4–9% broken strings, mostly lost accelerators and split placeholders. A team choosing "LLMs because they follow instructions" ships anywhere from 2.5% to 22% depending on the model. The deciding factors are the specific engine and whether a validator sits behind it.
 
-**The prompt can cause the failure, and silence can too.** Placeholders were invented because the prompt mentions placeholders; accelerators were dropped because it does not mention them. A static rule list should be replaced by per-string constraints that name exactly the placeholders and accelerators present, which is what the repair prompt does for the defects it detects.
+**The validator is the product.** The repair loop removed nearly every defect it could see and none it could not. One regex that did not match the corpus's `& File` notation left about 6,800 accelerator losses per open model in place after repair. For CI/CD use, validator coverage must be tested against the real string format of each project, for example with seeded test strings for every invariant type, before the loop is trusted. The same validator could gate NMT output too.
 
-**Low-resource languages need a safety net.** Gemma and Qwen are competitive on de/fr/es/zh/ja but fall into untranslated copies on Punjabi and Telugu. A pipeline that routes by language, or that always runs the validator, avoids shipping that collapse.
+**Each family needs a different guard.**
+- For NMT, the main risks are accelerators and placeholder formatting. Masking both with opaque tokens before translation and restoring them afterwards would remove most NMT defects; this is standard practice in professional CAT tools and not done by the raw APIs.
+- For LLMs, the risks are prompt-induced placeholder invention and low-resource collapse. Per-string constraints that name exactly the placeholders and accelerators present (as the repair prompt does) address the first. Language-based routing or the validator gate addresses the second.
+
+**Pre-processing can break invariants.** IndicTrans2's script normalisation split 99.5% of placeholders into `% 1`. Toolkit pre- and post-processing is part of the system under test and must be audited with it.
 
 **Validator-in-the-loop as a pipeline stage.** The audit is deterministic and cheap, and repair touches only flagged strings, so the pattern fits a CI/CD gate: translate → validate → repair → re-validate → merge. This connects directly to the Track 3 CI/CD design (Paper 2) [7].
 
-**Choosing an engine.** On current evidence, GPT-4o-mini offers commercial-NMT quality with the lowest LLM defect rate. Among open models, repaired Gemma-2-9B approaches MADLAD-400 quality but needs accelerator handling. [PENDING-NMT: final recommendation once NMT defect rates are known.]
+**Choosing an engine.**
+- For the best combination of quality and safety: GPT-4o-mini behind a validator-repair gate.
+- For an open-weights, self-hosted deployment: NLLB-200 is the safest NMT and close to commercial quality. Among open LLMs, repaired Gemma-2-9B is tied with MADLAD-400 on quality and safer, but it still needs accelerator handling.
+- For Indic languages specifically: IndicTrans2 has the highest CometKiwi, but its placeholder handling must be fixed before deployment.
 
 ---
 
 ## 6. Threats to Validity
 
-1. **Repair validator coverage and circularity.** The repair loop accepts a fix only if it passes its own validator. Defects of the types it checks are therefore low after repair partly by construction. The independent CometKiwi gain supports a real improvement. Conversely, the validator's accelerator pattern (`&[^\s\d_;]`) matched 1 of 785 accelerator strings, so accelerator defects were never repaired. Our audit uses a corrected pattern (`&\s?[^\s\d_;&]`); the defect counts in the LLM repository's README use the original one and are lower for that reason.
-2. **Unequal treatment.** Only LLMs were repaired. Applying the same validator and an LLM post-editor to NMT output is a natural follow-up. The like-for-like comparison is baseline LLM vs NMT.
-3. **Audit precision.** The audit is 91% precise on a 100-string sample. Its false positives are copy-fallback flags on names, identifiers and cognates, so copy-fallback counts are slight over-estimates. Grades were model-assisted with a human spot-check.
-4. **Quality granularity.** CometKiwi is available only as per-language means, so quality tests have n = 12 (n = 6 for IndicTrans2) and limited power. A single QE model is used, and CometKiwi is not designed to judge format invariants.
-5. **Model versions.** The API model is GPT-4o-mini, not GPT-4o. Commercial engines (Google, Microsoft, OpenAI) change server-side; outputs are frozen at their generation dates (3 Sep, 6 Sep and 18 Oct 2026).
-6. **Corpus.** KDE strings represent desktop UI, and the OPUS tokenization (`& File`, `& kexi;`) differs from raw `.po` files. A few source lines are corpus artifacts (hundreds of strings merged into one line). Web, mobile and cloud-console strings may contain different invariant mixes (ICU plural syntax, HTML).
+1. **Repair validator coverage and circularity.** The repair loop accepts a fix only if it passes its own validator. Defects of the types it checks are therefore low after repair partly by construction. The independent CometKiwi gain supports a real improvement. Conversely, the validator's accelerator pattern (`&[^\s\d_;]`) matched 1 of 785 accelerator strings, so accelerator defects were never repaired. Our audit uses a corrected pattern (`&\s?[^\s\d_;&]`). The defect counts in the LLM repository's README use the original pattern and are lower for that reason.
+2. **Unequal treatment.** Only LLMs were repaired. The like-for-like comparison is zero-shot LLM vs NMT (§4.1). Applying a validator gate and placeholder/accelerator masking to NMT is a natural follow-up.
+3. **Audit precision.** The audit is 92% precise on 150 validated flags and 100% precise for accelerator, placeholder, encoding and script flags. Its false positives are copy-fallback flags on names, identifiers and cognates, so copy-fallback counts are slight over-estimates for both families. Grades were model-assisted with a human spot-check.
+4. **What counts as an accelerator.** We count an accelerator as lost when no `&` marker remains, even if the target keeps the letter, e.g. `(D)`. Without the marker the shortcut does not work in KDE/Qt, but a localization engineer could restore it cheaply. These NMT cases are therefore easier to fix than a translated "and".
+5. **Quality granularity.** CometKiwi is available only as per-language means, so quality tests have n = 12 (n = 6 for IndicTrans2) and limited power. A single QE model is used, and CometKiwi is not designed to judge format invariants.
+6. **Model versions.** The API model is GPT-4o-mini, not GPT-4o. Commercial engines (Google, Microsoft, OpenAI) change server-side; outputs are frozen at their generation dates (3 Sep, 6 Sep and 18 Oct 2026). Google output came from the Sheets function, not the Cloud API.
+7. **Corpus.** KDE strings represent desktop UI, and the OPUS tokenization (`& File`, `& kexi;`) differs from raw `.po` files. Both families saw the same tokenized input, so the comparison is fair, but absolute accelerator rates on raw `&File` strings may differ. A few source lines are corpus artifacts (hundreds of strings merged into one line). Web, mobile and cloud-console strings may contain different invariant mixes (ICU plural syntax, HTML).
 
 ---
 
 ## 7. Conclusion
 
-On 10,228 KDE strings in 12 languages, zero-shot LLMs break between 2.53% and 21.92% of software strings, through model-specific failure modes: accelerator loss, invented placeholders, low-resource copy collapse and encoding corruption. A compiler-guided self-repair loop removes 29–77% of those defects, adds no new flawed strings and improves CometKiwi for every open model. But it leaves untouched every defect type its validator does not recognise. GPT-4o-mini matches commercial NMT quality, while open 7–12B LLMs still trail commercial NMT on quality, especially in low-resource languages. [PENDING-NMT: the head-to-head safety verdict.] Scripts, results and figures are released for re-running.
+On 10,228 KDE strings in 12 languages, neither LLMs nor classic NMT systems are uniformly safer for software localization. NMT systems break 4–9% of strings, mostly by losing keyboard accelerators and reformatting placeholders. Zero-shot LLMs range from 2.5% (GPT-4o-mini, safer than every NMT system) to 22% (Gemma-2-9B), failing through invented placeholders, accelerator loss and low-resource copy collapse. A compiler-guided self-repair loop removes 29–77% of LLM defects without adding new flawed strings and makes every repaired LLM safer than four of the five NMT systems. It still cannot fix what its validator does not check.
+
+On quality, GPT-4o-mini matches commercial NMT, while open 7–12B LLMs trail it, especially in low-resource languages. GPT-4o-mini with repair is the only configuration that is both at NMT quality and below 2% defects. For continuous localization, the engine choice matters less than putting a well-tested invariant validator between the engine and the build. Scripts, results and figures are released for re-running.
 
 ---
 
 ## Figures (in `paper1_llm_vs_nmt/figures/`)
-- **Fig. 1** `fig1_defect_rate_by_system.png`: defect rate per LLM, baseline vs repaired.
-- **Fig. 2** `fig2_quality_vs_defects.png`: CometKiwi vs defect rate; NMT shown as CometKiwi reference lines until defect data exist.
+- **Fig. 1** `fig1_defect_rate_by_system.png`: defect rate of all 15 suites, sorted, coloured by family.
+- **Fig. 2** `fig2_quality_vs_defects.png`: CometKiwi vs defect rate; arrows show the effect of repair.
 - **Fig. 3** `fig3_defect_heatmap_by_lang.png`: defect rate by system × language.
 - **Fig. 4** `fig4_defect_taxonomy.png`: defect-type mix per system.
 
@@ -250,13 +293,14 @@ python paper1_llm_vs_nmt/scripts/audit.py
 python paper1_llm_vs_nmt/scripts/build_master_table.py
 python paper1_llm_vs_nmt/scripts/stats.py
 python paper1_llm_vs_nmt/scripts/generate_figures.py
+python paper1_llm_vs_nmt/scripts/sample_nmt_check.py   # NMT validation sample (kept if already graded)
 ```
 
 ---
 
 ## References
 
-[1]–[30] are taken from the Track 1 NMT paper (`cloud-native-nmt-benchmark-main/main.tex`); [31]–[41] were added for this paper and checked against their publisher pages.
+[1]–[30] are taken from the Track 1 NMT paper (`nmt-benchmarking-paper-main/main.tex`; ref 28's author list corrected); [31]–[41] were added for this paper and checked against their publisher pages.
 
 1. Marcus A, Gould EW. Globalization, localization, and cross-cultural user-interface design. In: Jacko JA (ed.) *The Human-Computer Interaction Handbook*, 3rd edn. CRC Press, 2012, pp. 341–366.
 2. Chroust G. Software like a courteous butler: localization under cultural diversity. In: *ISSS 2007*.

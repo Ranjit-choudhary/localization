@@ -1,9 +1,14 @@
 system,total_strings,total_flawed,script_contamination,broken_placeholder,broken_accelerator,encoding_corruption,conversational_chatter,copy_fallback,empty_output,defect_rate_pct
 baseline_gemma_9b,122736,26899,1226,43,5076,0,1,20611,0,21.92
+baseline_google_translate,122736,7706,0,727,6146,1,0,836,0,6.28
 baseline_gpt4o,122736,3104,81,5,1939,0,1,1083,0,2.53
 baseline_llama_8b,122736,9749,0,1692,6791,10,1,1299,0,7.94
 baseline_mistral_nemo,122736,17302,0,10148,6518,10,2,718,0,14.1
 baseline_qwen_7b,122736,7340,328,691,1106,1343,1,3933,1,5.98
+indictrans2,61368,4661,1,2125,2524,0,0,38,0,7.6
+madlad400,122736,11119,4,2546,6525,0,1,1999,74,9.06
+microsoft_translator,122736,9458,364,1861,5378,1,1,2218,1,7.71
+nllb200,122736,5125,0,1728,2850,0,0,554,17,4.18
 repaired_gemma_9b,122736,6178,109,1,5181,0,1,885,5,5.03
 repaired_gpt4o,122736,2206,31,4,1940,0,1,232,0,1.8
 repaired_llama_8b,122736,6945,0,52,6812,1,0,89,0,5.66
